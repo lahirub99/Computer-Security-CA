@@ -1,10 +1,10 @@
 import hashlib
 
-# function to hash passwords using MD5
+# Hash passwords using MD5
 def hash_password(password):
     return hashlib.md5(password.encode()).hexdigest()
 
-# function to write user data to configuration file
+# Write user data to configuration file
 def write_config_file(users):
     with open('userdata.csv', mode='w') as file:
         file.write('username,password_hash,user_type,privilege_level\n')
@@ -12,7 +12,7 @@ def write_config_file(users):
             file.write(f"{user['username']},{hash_password(user['password'])},{user['user_type']},{user['privilege_level']}\n")
     print('Configuration file written successfully.')
 
-# function to read user data from configuration file
+# Read user data from configuration file
 def read_config_file():
     users = []
     with open('userdata.csv', mode='r') as file:
