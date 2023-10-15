@@ -1,0 +1,3 @@
+username,password_hash,user_type,privilege_level
+john,482c811da5d5b4bc6d497ffa98491e38,patient,1
+jane,96b33694c4bb7dbd07391e0be54745fb,staff,2
