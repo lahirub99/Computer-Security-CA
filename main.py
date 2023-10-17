@@ -21,6 +21,9 @@ privilage_level:
 '''
 config file: patientdata.csv
 Columns: name, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions
+
+Each data record is associated with a sensitivity level depending on its nature.
+
 '''
 def register():
     print("\n#### Registration section ####")
@@ -100,41 +103,48 @@ def register():
 
     print("\nRegistration successful.")
 
-
+def patient_session(username):
+    print(f"### Welcome {username}! ###")
+    while True:
+        print("\nSelect the option related to your functionality:\n1-View personal details\n2-View sickness details\n3-View drug prescriptions\n4-View lab test prescriptions\n5-Log out\n")
+        option = input("Your input:")
+        if option == '1':
+            print("Personal details")
+        elif option == '2':
+            print("Sickness details")
+        elif option == '3':
+            print("Drug prescriptions")
+        elif option == '4':
+            print("Lab test prescriptions")
+        elif option == '5':
+            print("Logging out...")
+            break
 
 
 def login():
-    username = input("Username: ")
-    password = input("Password: ")
+    while True:
+        print("\n#### Login Section ####")
+        
+        username = input("Username: ")
+        password = getpass.getpass("Password: ")
 
-    # if authenticate_user(username, password, users):
-    #     print(f"Welcome, {username}!")
-    #     privilege_level = users[username]["privilege_level"]
+        # Read user data from configuration file
+        with open('users.csv', mode='r') as file:
+            lines = file.readlines()
+            for line in lines:
+                fields = line.strip().split(',')
+                # test: print (fields)
+                if fields[0] == username and fields[1] == hash_password(password):
+                    print("Login successful.\n")
+                    user_type = fields[2]
+                    privilage_level = fields[3]     
 
-    #     if users[username]["user_type"] == "patient":
-    #         print("You are a patient and can view your data.")
-    #         data_records = read_data_records(data_filename, username, privilege_level)
-    #         for record in data_records:
-    #             print(", ".join(record))
-    #     else:
-    #         print("You are a hospital staff member.")
-    #         if privilege_level == "high":
-    #             print("You have high privileges and can read/write all data.")
-    #         else:
-    #             print("You have limited privileges and can read data for patients.")
-
-    #         action = input("Do you want to write data? (yes/no): ")
-    #         if action.lower() == "yes":
-    #             personal_details = input("Enter personal details: ")
-    #             sickness_details = input("Enter sickness details: ")
-    #             drug_prescriptions = input("Enter drug prescriptions: ")
-    #             lab_test_prescriptions = input("Enter lab test prescriptions: ")
-    #             write_data_record(data_filename, username, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions)
-    #             print("Data written successfully.")
-
-    # else:
-    #     print("Authentication failed. Please check your username and password.")
-
+                    if user_type == "patient":
+                        patient_session(username)               
+                    break
+            else:
+                print("Login failed. Please check username and password.")
+    
 
 
 ''' There are two main user types such as patients and hospital staff.  
@@ -147,7 +157,7 @@ print("*** Welcome! ***")
 while True:
     # user_type = input("Please select the user type (patient/staff):").strip().lower()
     # if user_type == "patient":
-    print("\nPlease select the option related to your functionality:\n1-Register\n2-Log in\n3-Log out\n")
+    print("Please select the option related to your functionality:\n1-Register\n2-Log in\n3-Log out\n")
 
     option = input("Your input:")
     if option == "1":
