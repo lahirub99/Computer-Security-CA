@@ -23,6 +23,44 @@ config file: patientdata.csv
 Columns: name, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions
 
 Each data record is associated with a sensitivity level depending on its nature.
+Each data record is due to an encounter with a patient.
+Hospital staff can read or write data based on account privilege level and sensitivity level of data
+
+*** Privilege_levels ***:
+The privilege level of a user is defined as a number.
+The user types whose privileges are included in this number have read/write access to the data corresponding to that privilege level.
+    privilege_level     user_type
+    0:                  patient
+    1:                  doctor
+    2:                  nurse
+    3:                  receptionist
+    4:                  pharmacist
+    5:                  lab technician
+
+*** Sensitivity_levels ***:
+Sensitivity levels for data record creation are hardcoded in the program and they cannot be manually changed. They are as follows.
+- Only Patient and Receptionist data type can create/edit personal details data records.
+- Only Doctor data type can create/edit sickness details data records.
+- Only Pharmacist, and Doctor data can create/edit drug prescription data records.
+- Only Lab Technician data types can create/edit lab test prescription data records.
+
+As mentioned above each data record is associated with read and write (i.e. view and edit) sensitivities separately. 
+These sensitivities are assigned when a new record is created. 
+
+A patients can only read their own data records.
+# It's assumed that all staff types can read all data records for smooth operation of the hospital system.
+
+A sensitivity level is defined as a sequence of numbers. Each number represents a different privilege type. 
+The user types whose privileges are included in this number sequence have read/write access to the data corresponding to that sensitivity level. Consider the ordering of the sequence does not matter.
+
+Therefore, sensitivities are as follows according to number sequence representation
+Data type               - Read Sensitivity  - Write Sensitivity
+Personal Details	    - “012345”          - “03”
+Sickness Details	    - “012345”          - “1”
+Drug Prescription	    - “012345”          - “14”
+Lab Test Prescription	- “012345”          - “5”
+
+When a certain functionality is trying to read or write data, the system checks the privilege of the user who is trying to perform the execution. If they are not compatible system will send a “not authorized” message and the system will output which user type to contact to complete the operation.
 
 '''
 def register():
@@ -102,6 +140,20 @@ def register():
         file.write(f"{username},{hash_password(password)},{user_type},{privilage_level}\n")
 
     print("\nRegistration successful.")
+
+def staff_session(username, privilage_level):
+    print(f"### Welcome {username}! ###")
+    while True:
+        print("\nSelect the option related to your functionality:\n1-View patient details\n2-Edit Patient Detils\n3-Log out\n")
+        option = input("Your input:")
+        if option == '1': 
+            print("View patient details")
+        elif option == '2':
+            print("Edit Patient Detils")
+        elif option == '3':
+            print("Logging out...")
+            break
+        
 
 def patient_session(username):
     print(f"### Welcome {username}! ###")
