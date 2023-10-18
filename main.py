@@ -153,10 +153,38 @@ def staff_session(username, privilage_level):
         elif option == '3':
             print("Logging out...")
             break
-        
+
+''' 
+This is the fuction for view details of a specific patient using the username.
+It fetches the data from the patientdata.csv file and prints the relavent data in a report format. 
+'''
+def view_patient_report(username):
+    with open('patientdata.csv', mode='r') as file:
+        lines = file.readlines()
+        for line in lines:
+            fields = line.strip().split(',')
+            if fields[0] == username:
+                personal_details = fields[1]
+                sickness_details = fields[2]
+                drug_prescriptions = fields[3]
+                lab_test_prescriptions = fields[4]
+                break
+        else:
+            print("Patient not found. Please check username again.")
+            return
+        # Generate report
+        print("\n### Patient Details ###")
+        print(f"Username: {username}")
+        print(f"Personal Details: {personal_details}")
+        print(f"Sickness Details: {sickness_details}")
+        print(f"Drug Prescriptions: {drug_prescriptions}")
+        print(f"Lab Test Prescriptions: {lab_test_prescriptions}")
+        return
+    
 
 def patient_session(username):
     print(f"### Welcome {username}! ###")
+    view_patient_report(username)
     while True:
         print("\nSelect the option related to your functionality:\n1-View personal details\n2-View sickness details\n3-View drug prescriptions\n4-View lab test prescriptions\n5-Log out\n")
         option = input("Your input:")
