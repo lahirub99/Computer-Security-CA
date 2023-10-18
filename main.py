@@ -20,7 +20,7 @@ privilage_level:
 '''
 '''
 config file: patientdata.csv
-Columns: name, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions
+Columns: patient_id,name, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions
 
 Each data record is associated with a sensitivity level depending on its nature.
 Each data record is due to an encounter with a patient.
@@ -55,6 +55,8 @@ The user types whose privileges are included in this number sequence have read/w
 
 Therefore, sensitivities are as follows according to number sequence representation
 Data type               - Read Sensitivity  - Write Sensitivity
+Patient ID              - “012345”          - “”
+Name                    - “012345”          - “03”
 Personal Details	    - “012345”          - “03”
 Sickness Details	    - “012345”          - “1”
 Drug Prescription	    - “012345”          - “14”
@@ -138,8 +140,26 @@ def register():
     # Write user data to configuration file
     with open('users.csv', mode='a') as file:
         file.write(f"{username},{hash_password(password)},{user_type},{privilage_level}\n")
+        
+    # If the registered person was a patient, a new row should be opened int 'patientdata.csv' to store the patient's data
+    # When the registration of a patient is done, a new entry will be added to the patientdata.csv file with only the patient ID and the name.
+    # Newly registered patient's ID is the will be a string such that, 'P' + the number with a one increment of the previous patient.
+    # Example: If the last patient ID is P003, the new patient ID will be P004.
+    if user_type == "patient":
+        with open('patientdata.csv', mode='r') as file:
+            lines = file.readlines()
+            if len(lines) == 0:
+                new_patient_id = 'P001'
+            else:
+                last_patient_id = lines[-1].split(',')[0]
+                new_patient_id = 'P' + str(int(last_patient_id[1:]) + 1).zfill(3)
+        with open('patientdata.csv', mode='a') as file:
+            file.write(f"{new_patient_id},{username},\n")
 
     print("\nRegistration successful.")
+    
+    # Todo - # When the registration is done, the user is automatically logged in to the system.
+
 
 def staff_session(username, privilage_level):
     print(f"### Welcome {username}! ###")

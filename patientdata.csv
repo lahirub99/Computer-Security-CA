@@ -1,2 +1,5 @@
-name,personal_details,sickness_details,drug_prescriptions,lab_test_prescriptions
-la,20 years old,fever,paracetamol,blood test
+patient_id,name,personal_details,sickness_details,drug_prescriptions,lab_test_prescriptions
+P001,la,20 years old,fever,paracetamol,blood test
+P002,Daniel,
+P003,John,
+P004,flex,
