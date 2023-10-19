@@ -58,7 +58,7 @@ Data type               - Read Sensitivity  - Write Sensitivity
 Patient ID              - “012345”          - “”
 Name                    - “012345”          - “03”
 Personal Details	    - “012345”          - “03”
-Sickness Details	    - “012345”          - “1”
+Sickness Details	    - “012345”          - “12”
 Drug Prescription	    - “012345”          - “14”
 Lab Test Prescription	- “012345”          - “5”
 
@@ -162,19 +162,6 @@ def register():
     # Todo - # When the registration is done, the user is automatically logged in to the system.
 
 
-def staff_session(username, privilage_level):
-    print(f"### Welcome {username}! ###")
-    while True:
-        print("\nSelect the option related to your functionality:\n1-View patient details\n2-Edit Patient Detils\n3-Log out\n")
-        option = input("Your input:")
-        if option == '1': 
-            print("View patient details")
-        elif option == '2':
-            print("Edit Patient Detils")
-        elif option == '3':
-            print("Logging out...")
-            break
-
 ''' Returns the privilage level of a given username.'''
 def get_privilage_level(username):
     with open('users.csv', mode='r') as file:
@@ -189,13 +176,13 @@ def get_privilage_level(username):
         return privilage_level
 
 
-def edit_personal_details(privilage_level, patient_name):
+def edit_personal_details(privilage_level, patient_identifier):
     if privilage_level == '0' or privilage_level == '3':
         with open('patientdata.csv', mode='r') as file:
             lines = file.readlines()
             for line in lines:
                 fields = line.strip().split(',')
-                if fields[1] == patient_name:
+                if fields[0] == patient_identifier or fields[1] == patient_identifier:
                     personal_details = fields[2]
                     break
             else:
@@ -215,7 +202,7 @@ def edit_personal_details(privilage_level, patient_name):
             updated_data = ""
             for line in lines:
                 fields = line.strip().split(',')
-                if fields[1] == patient_name:
+                if fields[0] == patient_identifier or fields[1] == patient_identifier:
                     # fields of patienddata.csv file: patient_id,name, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions
                     # fields[2] = personal_details + new_personal_details
                     fields[2] = new_personal_details
@@ -235,7 +222,7 @@ def edit_personal_details(privilage_level, patient_name):
 
 
 def edit_sickness_details(privilage_level, patient_id):
-    if privilage_level == '1':
+    if privilage_level == '1' or privilage_level == '2':
         with open('patientdata.csv', mode='r') as file:
             lines = file.readlines()
             for line in lines:
@@ -369,24 +356,27 @@ def edit_lab_test_prescriptions(privilage_level, patient_id):
         print("Sorry, you are not authorized to edit lab test prescriptions.")
     return
 
-
 ''' 
 This is the fuction for view details of a specific patient using the username.
 It fetches the data from the patientdata.csv file and prints the relavent data in a report format. 
+Identifier can be either the patient ID or the patient name. 
+When a patient is requesting his her own report, the identifier will be the username. 
+Similarly when a staff is requesting a patient's report, the identifier will be the patient ID.
 '''
-def view_patient_report(username):
+def view_patient_report(identifier):
     with open('patientdata.csv', mode='r') as file:
         lines = file.readlines()
         for line in lines:
             fields = line.strip().split(',')
-            if fields[1] == username:
+            if fields[1] == identifier or fields[0] == identifier:
+                username = fields[1]
                 personal_details = fields[2]
                 sickness_details = fields[3]
                 drug_prescriptions = fields[4]
                 lab_test_prescriptions = fields[5]
                 break
         else:
-            print("Patient not found. Please check username again.")
+            print("Patient not found. Please check identifier again.")
             return
         # Generate report
         print("\n### Patient Details ###")
@@ -413,6 +403,35 @@ def patient_session(username):
             break
 
 
+
+def staff_session(username, privilage_level):
+    print(f"### Welcome {username}! ###")
+    while True:
+        print("\nSelect the option related to your functionality:\n1-View a patient's report\n2-Edit patient's personal details\n3-Edit sickness details\n4-Edit drug prescritions\n5-Edit lab reports\n6-Log out\n")
+        option = input("Your input:")
+        if option == '1':
+            patient_id = input("Enter patient ID:")
+            view_patient_report(patient_id)
+        elif option == '2':
+            patient_id = input("Enter patient ID:")
+            edit_personal_details(privilage_level, patient_id)
+        elif option == '3':
+            patient_id = input("Enter patient ID:")
+            edit_sickness_details(privilage_level, patient_id)
+        elif option == '4':
+            patient_id = input("Enter patient ID:")
+            edit_drug_prescriptions(privilage_level, patient_id)
+        elif option == '5':
+            patient_id = input("Enter patient ID:")
+            edit_lab_test_prescriptions(privilage_level, patient_id)
+        elif option == '6':
+            print("Logging out...\n")
+            break
+        else:
+            print("Wrong input..Please check again and enter the number related to your option\n")
+
+
+
 def login():
     while True:
         print("\n#### Login Section ####")
@@ -432,8 +451,10 @@ def login():
                     privilage_level = fields[3]     
 
                     if user_type == "patient":
-                        patient_session(username)               
-                    break
+                        patient_session(username)
+                    else:
+                        staff_session(username, privilage_level)             
+                    return
             else:
                 print("Login failed. Please check username and password.")
     
