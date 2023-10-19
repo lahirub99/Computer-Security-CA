@@ -175,6 +175,44 @@ def staff_session(username, privilage_level):
             print("Logging out...")
             break
 
+''' Returns the privilage level of a given username.'''
+def get_privilage_level(username):
+    with open('users.csv', mode='r') as file:
+        lines = file.readlines()
+        for line in lines:
+            fields = line.strip().split(',')
+            if fields[0] == username:
+                privilage_level = fields[3]
+                break
+        else:
+            return -1
+        return privilage_level
+
+def edit_personal_details(privilage_level, patient_name):
+    if privilage_level == '0' or privilage_level == '3':
+        with open('patientdata.csv', mode='r') as file:
+            lines = file.readlines()
+            for line in lines:
+                fields = line.strip().split(',')
+                if fields[1] == patient_name:
+                    personal_details = fields[2]
+                    break
+            else:
+                print("Patient not found. Please check patient ID again.")
+                return
+        # Edit personal details 
+        if personal_details == "":
+            print("Current personal details: None")
+        else:
+            print(f"Current personal details: {personal_details}")
+        new_personal_details = input("Enter new personal details: ")
+        with open('patientdata.csv', mode='a') as file:
+            file.write(f"{new_personal_details}\n")
+        print("Personal details updated successfully.")
+    else:
+        print("Sorry, you are not authorized to edit personal details.")
+    return
+
 ''' 
 This is the fuction for view details of a specific patient using the username.
 It fetches the data from the patientdata.csv file and prints the relavent data in a report format. 
