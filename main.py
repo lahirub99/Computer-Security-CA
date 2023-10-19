@@ -188,6 +188,8 @@ def get_privilage_level(username):
             return -1
         return privilage_level
 
+
+
 def edit_personal_details(privilage_level, patient_name):
     if privilage_level == '0' or privilage_level == '3':
         with open('patientdata.csv', mode='r') as file:
@@ -206,8 +208,27 @@ def edit_personal_details(privilage_level, patient_name):
         else:
             print(f"Current personal details: {personal_details}")
         new_personal_details = input("Enter new personal details: ")
-        with open('patientdata.csv', mode='a') as file:
-            file.write(f"{new_personal_details}\n")
+        # Update the relevant row in the patientdata.csv file
+        # Add the new personal details to the existing personal details
+        with open('patientdata.csv', mode='r') as file:
+            lines = file.readlines()
+            # updated_data is the variable that stores the data to be written to the updated patientdata.csv file
+            updated_data = ""
+            for line in lines:
+                fields = line.strip().split(',')
+                if fields[1] == patient_name:
+                    # fields of patienddata.csv file: patient_id,name, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions
+                    # fields[2] = personal_details + new_personal_details
+                    fields[2] = new_personal_details
+                    # Update the data
+                    updated_data += ','.join(fields) + '\n'
+                    # Todo - Optimize the code to break the loop after the relevant row is found and use the upcoming lines as it is to update.
+
+                else:
+                    updated_data += line
+        # write the updated data in the patientdat.csv file
+        with open('patientdata.csv', mode='w') as file:
+            file.write(updated_data)
         print("Personal details updated successfully.")
     else:
         print("Sorry, you are not authorized to edit personal details.")
@@ -245,17 +266,13 @@ def patient_session(username):
     print(f"### Welcome {username}! ###")
     view_patient_report(username)
     while True:
-        print("\nSelect the option related to your functionality:\n1-View personal details\n2-View sickness details\n3-View drug prescriptions\n4-View lab test prescriptions\n5-Log out\n")
+        print("\nSelect the option related to your functionality:\n1-View my report\n2-Edit personal details\n3-Log out")
         option = input("Your input:")
         if option == '1':
-            print("Personal details")
+            view_patient_report(username)
         elif option == '2':
-            print("Sickness details")
+            edit_personal_details(get_privilage_level(username), username)
         elif option == '3':
-            print("Drug prescriptions")
-        elif option == '4':
-            print("Lab test prescriptions")
-        elif option == '5':
             print("Logging out...")
             break
 
