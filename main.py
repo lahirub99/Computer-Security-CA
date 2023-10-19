@@ -189,7 +189,6 @@ def get_privilage_level(username):
         return privilage_level
 
 
-
 def edit_personal_details(privilage_level, patient_name):
     if privilage_level == '0' or privilage_level == '3':
         with open('patientdata.csv', mode='r') as file:
@@ -233,6 +232,143 @@ def edit_personal_details(privilage_level, patient_name):
     else:
         print("Sorry, you are not authorized to edit personal details.")
     return
+
+
+def edit_sickness_details(privilage_level, patient_id):
+    if privilage_level == '1':
+        with open('patientdata.csv', mode='r') as file:
+            lines = file.readlines()
+            for line in lines:
+                fields = line.strip().split(',')
+                if fields[0] == patient_id:
+                    sickness_details = fields[3]
+                    break
+            else:
+                print("Patient not found. Please check patient ID again.")
+                return
+        # Edit sickness details
+        if sickness_details == "":
+            print("Current sickness details: None")
+        else:
+            print(f"Current sickness details: {sickness_details}")
+        new_sickness_details = input("Enter new sickness details: ")
+        # Update the relevant row in the patientdata.csv file
+        # Add the new sickness details to the existing sickness details
+        with open('patientdata.csv', mode='r') as file:
+            lines = file.readlines()
+            # updated_data is the variable that stores the data to be written to the updated patientdata.csv file
+            updated_data = ""
+            for line in lines:
+                fields = line.strip().split(',')
+                if fields[0] == patient_id:
+                    # fields of patienddata.csv file: patient_id,name, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions
+                    # fields[3] = sickness_details + new_sickness_details
+                    fields[3] = new_sickness_details
+                    # Update the data
+                    updated_data += ','.join(fields) + '\n'
+                    # Todo - Optimize the code to break the loop after the relevant row is found and use the upcoming lines as it is to update.
+
+                else:
+                    updated_data += line
+
+        # write the updated data in the patientdat.csv file
+        with open('patientdata.csv', mode='w') as file:
+            file.write(updated_data)
+        print("Sickness details updated successfully.")
+    else:
+        print("Sorry, you are not authorized to edit sickness details.")
+    return
+
+def edit_drug_prescriptions(privilage_level, patient_id):
+    if privilage_level == '1' or privilage_level == '4':
+        with open('patientdata.csv', mode='r') as file:
+            lines = file.readlines()
+            for line in lines:
+                fields = line.strip().split(',')
+                if fields[0] == patient_id:
+                    drug_prescriptions = fields[4]
+                    break
+            else:
+                print("Patient not found. Please check patient ID again.")
+                return
+        # Edit drug prescriptions
+        if drug_prescriptions == "":
+            print("Current drug prescriptions: None")
+        else:
+            print(f"Current drug prescriptions: {drug_prescriptions}")
+        new_drug_prescriptions = input("Enter new drug prescriptions: ")
+        # Update the relevant row in the patientdata.csv file
+        # Add the new drug prescriptions to the existing drug prescriptions
+        with open('patientdata.csv', mode='r') as file:
+            lines = file.readlines()
+            # updated_data is the variable that stores the data to be written to the updated patientdata.csv file
+            updated_data = ""
+            for line in lines:
+                fields = line.strip().split(',')
+                if fields[0] == patient_id:
+                    # fields of patienddata.csv file: patient_id,name, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions
+                    # fields[4] = drug_prescriptions + new_drug_prescriptions
+                    fields[4] = new_drug_prescriptions
+                    # Update the data
+                    updated_data += ','.join(fields) + '\n'
+                    # Todo - Optimize the code to break the loop after the relevant row is found and use the upcoming lines as it is to update.
+
+                else:
+                    updated_data += line
+        
+        # write the updated data in the patientdat.csv file
+        with open('patientdata.csv', mode='w') as file:
+            file.write(updated_data)
+        print("Drug prescriptions updated successfully.")
+    else:
+        print("Sorry, you are not authorized to edit drug prescriptions.")
+    return
+
+def edit_lab_test_prescriptions(privilage_level, patient_id):
+    if privilage_level == '5':
+        with open('patientdata.csv', mode='r') as file:
+            lines = file.readlines()
+            for line in lines:
+                fields = line.strip().split(',')
+                if fields[0] == patient_id:
+                    lab_test_prescriptions = fields[5]
+                    break
+            else:
+                print("Patient not found. Please check patient ID again.")
+                return
+        # Edit lab test prescriptions
+        if lab_test_prescriptions == "":
+            print("Current lab test prescriptions: None")
+        else:
+            print(f"Current lab test prescriptions: {lab_test_prescriptions}")
+        new_lab_test_prescriptions = input("Enter new lab test prescriptions: ")
+        # Update the relevant row in the patientdata.csv file
+        # Add the new lab test prescriptions to the existing lab test prescriptions
+        with open('patientdata.csv', mode='r') as file:
+            lines = file.readlines()
+            # updated_data is the variable that stores the data to be written to the updated patientdata.csv file
+            updated_data = ""
+            for line in lines:
+                fields = line.strip().split(',')
+                if fields[0] == patient_id:
+                    # fields of patienddata.csv file: patient_id,name, personal_details, sickness_details, drug_prescriptions, lab_test_prescriptions
+                    # fields[5] = lab_test_prescriptions + new_lab_test_prescriptions
+                    fields[5] = new_lab_test_prescriptions
+                    # Update the data
+                    updated_data += ','.join(fields) + '\n'
+                    # Todo - Optimize the code to break the loop after the relevant row is found and use the upcoming lines as it is to update.
+
+                else:
+                    updated_data += line
+
+        # write the updated data in the patientdat.csv file
+        with open('patientdata.csv', mode='w') as file:
+            file.write(updated_data)
+        print("Lab test prescriptions updated successfully.")
+    else:
+        print("Sorry, you are not authorized to edit lab test prescriptions.")
+    return
+
 
 ''' 
 This is the fuction for view details of a specific patient using the username.
