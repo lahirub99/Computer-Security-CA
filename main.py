@@ -154,7 +154,8 @@ def register():
                 last_patient_id = lines[-1].split(',')[0]
                 new_patient_id = 'P' + str(int(last_patient_id[1:]) + 1).zfill(3)
         with open('patientdata.csv', mode='a') as file:
-            file.write(f"{new_patient_id},{username},\n")
+            # Only the patient ID and the name will be added to the patientdata.csv file and the rest of the fields will be left blank.
+            file.write(f"{new_patient_id},{username},,,,\n")
 
     print("\nRegistration successful.")
     
@@ -183,11 +184,11 @@ def view_patient_report(username):
         lines = file.readlines()
         for line in lines:
             fields = line.strip().split(',')
-            if fields[0] == username:
-                personal_details = fields[1]
-                sickness_details = fields[2]
-                drug_prescriptions = fields[3]
-                lab_test_prescriptions = fields[4]
+            if fields[1] == username:
+                personal_details = fields[2]
+                sickness_details = fields[3]
+                drug_prescriptions = fields[4]
+                lab_test_prescriptions = fields[5]
                 break
         else:
             print("Patient not found. Please check username again.")
@@ -257,7 +258,7 @@ print("*** Welcome! ***")
 while True:
     # user_type = input("Please select the user type (patient/staff):").strip().lower()
     # if user_type == "patient":
-    print("Please select the option related to your functionality:\n1-Register\n2-Log in\n3-Log out\n")
+    print("MAIN MENU:\n1-Register\n2-Log in\n3-Log out\n")
 
     option = input("Your input:")
     if option == "1":
@@ -267,4 +268,4 @@ while True:
     elif option == "3":
         break
     else:
-        print("Wrong input..Please check again and enter the number related to your option")
+        print("Wrong input..Please check again and enter the number related to your option\n")
