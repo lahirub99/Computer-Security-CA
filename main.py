@@ -78,7 +78,7 @@ def register():
     if user_type == "1":
         user_type = "patient"
         privilage_level = "0"
-    
+            
     elif user_type == "2":
         # Varification codes for staff types has been used for improved security.
         varification_codes = { "1": "doc111", 
@@ -93,24 +93,25 @@ def register():
 
         
         if code == varification_codes[staff_type]:
-                if staff_type == "1":
-                    user_type = "doctor"
-                    privilage_level = "1"
-                elif staff_type == "2":
-                    user_type = "nurse"
-                    privilage_level = "2"
-                elif staff_type == "3":
-                    user_type = "receptionist"
-                    privilage_level = "3"
-                elif staff_type == "4":
-                    user_type = "pharmacist"
-                    privilage_level = "4"
-                elif staff_type == "5":
-                    user_type = "lab technician"
-                    privilage_level = "5"
-                else:
-                    print("Invalid input for the staff type. Please check again.")
-                    return
+            if staff_type == "1":
+                user_type = "doctor"
+                privilage_level = "1"
+            elif staff_type == "2":
+                user_type = "nurse"
+                privilage_level = "2"
+            elif staff_type == "3":
+                user_type = "receptionist"
+                privilage_level = "3"
+            elif staff_type == "4":
+                user_type = "pharmacist"
+                privilage_level = "4"
+            elif staff_type == "5":
+                user_type = "lab technician"
+                privilage_level = "5"
+            else:
+                print("Invalid input for the staff type. Please check again.")
+                return
+            
         else: 
             print("Varification code is worng. Please check again.")
             return
@@ -158,9 +159,16 @@ def register():
             file.write(f"{new_patient_id},{username},,,,\n")
 
     print("\nRegistration successful.")
-    
-    # Todo - # When the registration is done, the user is automatically logged in to the system.
 
+    # When the registration is done, the user is automatically logged in to the system.
+    if user_type == "patient":
+        patient_session(username)
+        return
+    else:
+        staff_session(username, privilage_level)
+        return
+    
+    
 
 ''' Returns the privilage level of a given username.'''
 def get_privilage_level(username):
@@ -390,7 +398,7 @@ def view_patient_report(identifier):
 
 def patient_session(username):
     print(f"### Welcome {username}! ###")
-    view_patient_report(username)
+    #view_patient_report(username)
     while True:
         print("\nSelect the option related to your functionality:\n1-View my report\n2-Edit personal details\n3-Log out")
         option = input("Your input:")
@@ -399,7 +407,7 @@ def patient_session(username):
         elif option == '2':
             edit_personal_details(get_privilage_level(username), username)
         elif option == '3':
-            print("Logging out...")
+            print("Logging out...\n")
             break
 
 
@@ -470,7 +478,7 @@ print("*** Welcome! ***")
 while True:
     # user_type = input("Please select the user type (patient/staff):").strip().lower()
     # if user_type == "patient":
-    print("MAIN MENU:\n1-Register\n2-Log in\n3-Log out\n")
+    print("MAIN MENU:\n1-Register\n2-Log in\n3-Exit\n")
 
     option = input("Your input:")
     if option == "1":

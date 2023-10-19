@@ -1,3 +1,4 @@
 patient_id,name,personal_details,sickness_details,drug_prescriptions,lab_test_prescriptions
-P001,la,21 years old,fever,paracetamol,blood test
-P002,flex,I am from Aue.,,,
+P001,Lahiru,21 years old,dengue,Tylenol,blood test
+P002,flex,I am from Yale.,,,
+P003,Nimal,40 years old.,,,
